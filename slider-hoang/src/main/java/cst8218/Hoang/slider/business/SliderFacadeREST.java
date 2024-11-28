@@ -19,8 +19,8 @@ import java.util.List;
  */
 @Stateless
 @Path("sliders")
-@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class SliderFacadeREST extends AbstractFacade<Slider> {
 
     @PersistenceContext(unitName = "my_persistence_unit")
@@ -35,25 +35,33 @@ public class SliderFacadeREST extends AbstractFacade<Slider> {
         return em;
     }
 
+    /**
+     * Handles creation or updating of a Slider entity.
+     */
     @POST
     public Response createOrUpdateSlider(Slider entity) {
         if (entity.getId() == null) {
+            // Create a new slider
             super.create(entity);
             return Response.status(Response.Status.CREATED).entity(entity).build();
         } else {
+            // Update an existing slider
             Slider existingSlider = super.find(entity.getId());
             if (existingSlider != null) {
                 entity.updateNonNullAttributes(existingSlider);
                 super.edit(existingSlider);
                 return Response.ok(existingSlider).build();
             } else {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("Slider with specified ID does not exist").build();
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Slider with ID " + entity.getId() + " not found").build();
             }
         }
     }
 
-    @POST
+    /**
+     * Explicitly handles updating a slider by ID.
+     */
+    @PUT
     @Path("{id}")
     public Response updateSliderById(@PathParam("id") Long id, Slider entity) {
         if (!id.equals(entity.getId())) {
@@ -63,8 +71,8 @@ public class SliderFacadeREST extends AbstractFacade<Slider> {
 
         Slider existingSlider = super.find(id);
         if (existingSlider == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Slider with specified ID does not exist").build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Slider with ID " + id + " not found").build();
         }
 
         entity.updateNonNullAttributes(existingSlider);
@@ -72,31 +80,9 @@ public class SliderFacadeREST extends AbstractFacade<Slider> {
         return Response.ok(existingSlider).build();
     }
 
-    @PUT
-    @Path("{id}")
-    public Response replaceSliderById(@PathParam("id") Long id, Slider entity) {
-        if (!id.equals(entity.getId())) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("ID in the URL and body do not match").build();
-        }
-
-        Slider existingSlider = super.find(id);
-        if (existingSlider == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Slider with specified ID does not exist").build();
-        }
-
-        super.remove(existingSlider);
-        super.create(entity);
-        return Response.ok(entity).build();
-    }
-
-    @PUT
-    public Response putNotAllowed() {
-        return Response.status(Response.Status.METHOD_NOT_ALLOWED)
-                .entity("PUT operation is not allowed on the root resource").build();
-    }
-
+    /**
+     * Deletes a slider by ID.
+     */
     @DELETE
     @Path("{id}")
     public Response remove(@PathParam("id") Long id) {
@@ -106,10 +92,13 @@ public class SliderFacadeREST extends AbstractFacade<Slider> {
             return Response.noContent().build();
         } else {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Slider with specified ID does not exist").build();
+                    .entity("Slider with ID " + id + " not found").build();
         }
     }
 
+    /**
+     * Retrieves a slider by ID.
+     */
     @GET
     @Path("{id}")
     public Response find(@PathParam("id") Long id) {
@@ -118,29 +107,22 @@ public class SliderFacadeREST extends AbstractFacade<Slider> {
             return Response.ok(slider).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Slider with specified ID does not exist").build();
+                    .entity("Slider with ID " + id + " not found").build();
         }
     }
 
     /**
-     * Retrieves all Slider entities.
-     * 
-     * @return A Response containing the list of all Slider entities.
+     * Retrieves all sliders.
      */
     @GET
-    @Path("all")
     public Response getAllSliders() {
         List<Slider> sliders = super.findAll();
         return Response.ok(sliders).build();
     }
 
-    @GET
-    @Path("{from}/{to}")
-    public Response findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        List<Slider> sliders = super.findRange(new int[]{from, to});
-        return Response.ok(sliders).build();
-    }
-
+    /**
+     * Returns the count of sliders.
+     */
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
