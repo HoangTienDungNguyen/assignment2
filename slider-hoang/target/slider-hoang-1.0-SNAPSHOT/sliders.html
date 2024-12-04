@@ -26,6 +26,7 @@
           x: "X Position",
           y: "Y Position",
           maxTravel: "Max Travel",
+          currentTravel: "Current Travel",
           actions: "Actions",
           create: "Create a New Slider",
           edit: "Edit",
@@ -40,6 +41,7 @@
           x: "X 位置",
           y: "Y 位置",
           maxTravel: "最大移动",
+          currentTravel: "当前移动",
           actions: "操作",
           create: "创建新滑块",
           edit: "编辑",
@@ -54,6 +56,7 @@
           x: "Vị trí X",
           y: "Vị trí Y",
           maxTravel: "Khoảng cách tối đa",
+          currentTravel: "Khoảng cách hiện tại",
           actions: "Hành động",
           create: "Tạo Thanh trượt mới",
           edit: "Chỉnh sửa",
@@ -75,43 +78,70 @@
           .catch(error => console.error('Error fetching sliders:', error));
       }, [language]);
 
-      const handleSave = (event) => {
-            event.preventDefault();
+      const handleCreate = (event) => {
+    event.preventDefault();
 
-            // 检查 selectedSlider 数据是否完整
-            const validatedSlider = {
-              id: selectedSlider.id || null,
-              size: selectedSlider.size || 0,
-              x: selectedSlider.x || 0,
-              y: selectedSlider.y || 0,
-              maxTravel: selectedSlider.maxTravel || 0,
-            };
+    const newSlider = {
+      size: selectedSlider.size || 0,
+      x: selectedSlider.x || 0,
+      y: selectedSlider.y || 0,
+      maxTravel: selectedSlider.maxTravel || 0,
+      currentTravel: selectedSlider.currentTravel || 0,
+    };
 
-            const method = selectedSlider.id ? 'PUT' : 'POST';
-            const url = selectedSlider.id
-              ? `http://localhost:8080/slider-hoang/resources/sliders/${selectedSlider.id}`
-              : `http://localhost:8080/slider-hoang/resources/sliders`;
+    fetch('http://localhost:8080/slider-hoang/resources/sliders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newSlider),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(() => {
+        setFormVisible(false);
+        fetch('http://localhost:8080/slider-hoang/resources/sliders/all')
+          .then((response) => response.json())
+          .then((data) => setSliders(data));
+      })
+      .catch((error) => console.error('Error creating slider:', error));
+};
 
-            fetch(url, {
-              method,
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(validatedSlider),
-            })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-              })
-              .then(() => {
-                setFormVisible(false);
-                fetch('http://localhost:8080/slider-hoang/resources/sliders/all')
-                  .then((response) => response.json())
-                  .then((data) => setSliders(data));
-              })
-              .catch((error) => console.error('Error saving slider:', error));
-          };
+    const handleEdit = (event) => {
+        event.preventDefault();
 
+        const updatedSlider = {
+          id: selectedSlider.id,
+          size: selectedSlider.size || 0,
+          x: selectedSlider.x || 0,
+          y: selectedSlider.y || 0,
+          maxTravel: selectedSlider.maxTravel || 0,
+          currentTravel: selectedSlider.currentTravel || 0,
+        };
+
+        const url = `http://localhost:8080/slider-hoang/resources/sliders/${selectedSlider.id}`;
+
+        fetch(url, {
+          method: 'PUT',  // 确保使用PUT方法
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedSlider),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(() => {
+            setFormVisible(false);
+            fetch('http://localhost:8080/slider-hoang/resources/sliders/all')
+              .then((response) => response.json())
+              .then((data) => setSliders(data));
+          })
+          .catch((error) => console.error('Error editing slider:', error));
+    };
 
 
       const handleDelete = (id) => {
@@ -147,6 +177,7 @@
                 <th>{t.x}</th>
                 <th>{t.y}</th>
                 <th>{t.maxTravel}</th>
+                <th>{t.currentTravel}</th>
                 <th>{t.actions}</th>
               </tr>
             </thead>
@@ -158,6 +189,7 @@
                   <td>{slider.x}</td>
                   <td>{slider.y}</td>
                   <td>{slider.maxTravel}</td>
+                  <td>{slider.currentTravel}</td>
                   <td>
                     <button onClick={() => { setSelectedSlider(slider); setFormVisible(true); }}>{t.edit}</button>
                     <button onClick={() => handleDelete(slider.id)}>{t.delete}</button>
@@ -167,13 +199,13 @@
             </tbody>
           </table>
 
-          <button onClick={() => { setSelectedSlider({ size: '', x: '', y: '', maxTravel: '' }); setFormVisible(true); }}>
+          <button onClick={() => { setSelectedSlider({ size: '', x: '', y: '', maxTravel: '', currentTravel: '' }); setFormVisible(true); }}>
             {t.create}
           </button>
 
           {/* Form for Create or Edit */}
           {formVisible && (
-            <form onSubmit={handleSave} style={{ marginTop: "20px" }}>
+            <form onSubmit={selectedSlider.id ? handleEdit : handleCreate} style={{ marginTop: "20px" }}>
               <h2>{selectedSlider.id ? t.edit : t.create}</h2>
               <label>
                 {t.size}: 
@@ -193,6 +225,11 @@
               <label>
                 {t.maxTravel}: 
                 <input type="number" value={selectedSlider.maxTravel || ''} onChange={(e) => setSelectedSlider({ ...selectedSlider, maxTravel: e.target.value })} required />
+              </label>
+              <br />
+              <label>
+                {t.currentTravel}: 
+                <input type="number" value={selectedSlider.currentTravel || ''} onChange={(e) => setSelectedSlider({ ...selectedSlider, currentTravel: e.target.value })} required />
               </label>
               <br />
               <button type="submit">{t.save}</button>

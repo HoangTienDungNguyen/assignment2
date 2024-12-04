@@ -82,14 +82,26 @@ public class SliderFacadeREST extends AbstractFacade<Slider> {
 
         Slider existingSlider = super.find(id);
         if (existingSlider == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
+            return Response.status(Response.Status.NOT_FOUND)
                     .entity("Slider with specified ID does not exist").build();
         }
 
-        super.remove(existingSlider);
-        super.create(entity);
-        return Response.ok(entity).build();
+        // 更新所有字段
+        existingSlider.setSize(entity.getSize());
+        existingSlider.setX(entity.getX());
+        existingSlider.setY(entity.getY());
+        existingSlider.setCurrentTravel(entity.getCurrentTravel());
+        existingSlider.setMaxTravel(entity.getMaxTravel());
+
+        em.merge(existingSlider);
+        em.flush(); // 强制将变更提交到数据库
+
+        return Response.ok(existingSlider).build();
     }
+
+
+
+
 
     @PUT
     public Response putNotAllowed() {

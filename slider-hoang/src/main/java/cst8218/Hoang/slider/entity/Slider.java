@@ -162,28 +162,15 @@ public class Slider implements Serializable {
      * @param existingSlider The existing Slider entity to update.
      */
     public void updateNonNullAttributes(Slider existingSlider) {
-        if (this.getSize() != null) {
-            existingSlider.setSize(this.getSize());
-        }
-        if (this.getX() != null) {
-            existingSlider.setX(this.getX());
-        }
-        if (this.getY() != null) {
-            existingSlider.setY(this.getY());
-        }
-        if (this.getCurrentTravel() != null) {
-            existingSlider.setCurrentTravel(this.getCurrentTravel());
-        }
-        if (this.getMaxTravel() != null) {
-            existingSlider.setMaxTravel(this.getMaxTravel());
-        }
-        if (this.getMvtDirection() != null) {
-            existingSlider.setMvtDirection(this.getMvtDirection());
-        }
-        if (this.getDirChangeCount() != null) {
-            existingSlider.setDirChangeCount(this.getDirChangeCount());
-        }
-    }
+    existingSlider.setSize(this.getSize());
+    existingSlider.setX(this.getX());
+    existingSlider.setY(this.getY());
+    existingSlider.setCurrentTravel(this.getCurrentTravel());
+    existingSlider.setMaxTravel(this.getMaxTravel());
+    existingSlider.setMvtDirection(this.getMvtDirection());
+    existingSlider.setDirChangeCount(this.getDirChangeCount());
+}
+
 
     @Override
     public int hashCode() {
