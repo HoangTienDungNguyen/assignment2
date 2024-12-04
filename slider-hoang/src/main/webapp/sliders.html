@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sliders</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div> <!-- React 应用挂载点 -->
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function SlidersApp() {
+      const [sliders, setSliders] = useState([]);
+      const [selectedSlider, setSelectedSlider] = useState(null);
+      const [language, setLanguage] = useState('en');
+      const [formVisible, setFormVisible] = useState(false);
+
+      const translations = {
+        en: {
+          title: "Sliders List",
+          size: "Size",
+          x: "X Position",
+          y: "Y Position",
+          maxTravel: "Max Travel",
+          actions: "Actions",
+          create: "Create a New Slider",
+          edit: "Edit",
+          delete: "Delete",
+          cancel: "Cancel",
+          save: "Save",
+          language: "Language",
+        },
+        zh: {
+          title: "滑块列表",
+          size: "大小",
+          x: "X 位置",
+          y: "Y 位置",
+          maxTravel: "最大移动",
+          actions: "操作",
+          create: "创建新滑块",
+          edit: "编辑",
+          delete: "删除",
+          cancel: "取消",
+          save: "保存",
+          language: "语言",
+        },
+        vi: {
+          title: "Danh sách Thanh trượt",
+          size: "Kích thước",
+          x: "Vị trí X",
+          y: "Vị trí Y",
+          maxTravel: "Khoảng cách tối đa",
+          actions: "Hành động",
+          create: "Tạo Thanh trượt mới",
+          edit: "Chỉnh sửa",
+          delete: "Xóa",
+          cancel: "Hủy bỏ",
+          save: "Lưu",
+          language: "Ngôn ngữ",
+        }
+      };
+
+      const t = translations[language];
+
+      useEffect(() => {
+        fetch('http://localhost:8080/slider-hoang/resources/sliders/all', {
+          headers: { 'Accept-Language': language }
+        })
+          .then(response => response.json())
+          .then(data => setSliders(data))
+          .catch(error => console.error('Error fetching sliders:', error));
+      }, [language]);
+
+      const handleSave = (event) => {
+            event.preventDefault();
+
+            // 检查 selectedSlider 数据是否完整
+            const validatedSlider = {
+              id: selectedSlider.id || null,
+              size: selectedSlider.size || 0,
+              x: selectedSlider.x || 0,
+              y: selectedSlider.y || 0,
+              maxTravel: selectedSlider.maxTravel || 0,
+            };
+
+            const method = selectedSlider.id ? 'PUT' : 'POST';
+            const url = selectedSlider.id
+              ? `http://localhost:8080/slider-hoang/resources/sliders/${selectedSlider.id}`
+              : `http://localhost:8080/slider-hoang/resources/sliders`;
+
+            fetch(url, {
+              method,
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(validatedSlider),
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+              })
+              .then(() => {
+                setFormVisible(false);
+                fetch('http://localhost:8080/slider-hoang/resources/sliders/all')
+                  .then((response) => response.json())
+                  .then((data) => setSliders(data));
+              })
+              .catch((error) => console.error('Error saving slider:', error));
+          };
+
+
+
+      const handleDelete = (id) => {
+        fetch(`http://localhost:8080/slider-hoang/resources/sliders/${id}`, {
+          method: 'DELETE'
+        })
+          .then(() => {
+            setSliders(sliders.filter(slider => slider.id !== id));
+          })
+          .catch(error => console.error('Error deleting slider:', error));
+      };
+
+      return (
+        <div>
+          <h1>{t.title}</h1>
+
+          {/* Language Selector */}
+          <div>
+            <label>{t.language}: </label>
+            <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+              <option value="en">English</option>
+              <option value="zh">中文</option>
+              <option value="vi">Tiếng Việt</option>
+            </select>
+          </div>
+
+          {/* Sliders Table */}
+          <table border="1" style={{ marginTop: "20px" }}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>{t.size}</th>
+                <th>{t.x}</th>
+                <th>{t.y}</th>
+                <th>{t.maxTravel}</th>
+                <th>{t.actions}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sliders.map(slider => (
+                <tr key={slider.id}>
+                  <td>{slider.id}</td>
+                  <td>{slider.size}</td>
+                  <td>{slider.x}</td>
+                  <td>{slider.y}</td>
+                  <td>{slider.maxTravel}</td>
+                  <td>
+                    <button onClick={() => { setSelectedSlider(slider); setFormVisible(true); }}>{t.edit}</button>
+                    <button onClick={() => handleDelete(slider.id)}>{t.delete}</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <button onClick={() => { setSelectedSlider({ size: '', x: '', y: '', maxTravel: '' }); setFormVisible(true); }}>
+            {t.create}
+          </button>
+
+          {/* Form for Create or Edit */}
+          {formVisible && (
+            <form onSubmit={handleSave} style={{ marginTop: "20px" }}>
+              <h2>{selectedSlider.id ? t.edit : t.create}</h2>
+              <label>
+                {t.size}: 
+                <input type="number" value={selectedSlider.size || ''} onChange={(e) => setSelectedSlider({ ...selectedSlider, size: e.target.value })} required />
+              </label>
+              <br />
+              <label>
+                {t.x}: 
+                <input type="number" value={selectedSlider.x || ''} onChange={(e) => setSelectedSlider({ ...selectedSlider, x: e.target.value })} required />
+              </label>
+              <br />
+              <label>
+                {t.y}: 
+                <input type="number" value={selectedSlider.y || ''} onChange={(e) => setSelectedSlider({ ...selectedSlider, y: e.target.value })} required />
+              </label>
+              <br />
+              <label>
+                {t.maxTravel}: 
+                <input type="number" value={selectedSlider.maxTravel || ''} onChange={(e) => setSelectedSlider({ ...selectedSlider, maxTravel: e.target.value })} required />
+              </label>
+              <br />
+              <button type="submit">{t.save}</button>
+              <button type="button" onClick={() => setFormVisible(false)}>{t.cancel}</button>
+            </form>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<SlidersApp />);
+  </script>
+</body>
+</html>

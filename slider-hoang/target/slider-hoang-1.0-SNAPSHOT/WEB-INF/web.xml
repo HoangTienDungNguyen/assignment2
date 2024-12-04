@@ -7,26 +7,7 @@
         <session-timeout>30</session-timeout>
     </session-config>
     
-    <!-- JSF FacesServlet configuration -->
-    <servlet>
-        <servlet-name>FacesServlet</servlet-name>
-        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>FacesServlet</servlet-name>
-        <url-pattern>*.xhtml</url-pattern>
-    </servlet-mapping>
-
-    <!-- Default welcome file configuration -->
-    <welcome-file-list>
-        <welcome-file>index.xhtml</welcome-file>
-    </welcome-file-list>
-    
-<!-- Security constraints -->
-    
-    <!-- RESTful API security -->
+    <!-- RESTful API Security -->
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>REST API</web-resource-name>
@@ -38,7 +19,7 @@
         </auth-constraint>
     </security-constraint>
 
-    <!-- JSF Slider Pages security -->
+    <!-- JSF Slider Pages Security -->
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Slider Pages</web-resource-name>
@@ -50,18 +31,18 @@
         </auth-constraint>
     </security-constraint>
 
-    <!-- Admin area security -->
+    <!-- Admin Area Security -->
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Admin Area</web-resource-name>
-            <url-pattern>/*</url-pattern>
+            <url-pattern>/appuser/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>Admin</role-name>
         </auth-constraint>
     </security-constraint>
 
-    <!-- Public index page -->
+    <!-- Public Index Page -->
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Public Page</web-resource-name>
@@ -69,8 +50,13 @@
         </web-resource-collection>
     </security-constraint>
     
+    <!-- Authentication Mechanism -->
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>SliderAppRealm</realm-name>
+    </login-config>
 
-    <!-- Security roles -->
+    <!-- Security Roles -->
     <security-role>
         <role-name>RestGroup</role-name>
     </security-role>
@@ -81,5 +67,19 @@
         <role-name>Admin</role-name>
     </security-role>
 
+    <!-- JSF Configuration -->
+    <servlet>
+        <servlet-name>FacesServlet</servlet-name>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FacesServlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
 
+    <!-- Welcome File -->
+    <welcome-file-list>
+        <welcome-file>sliders.html</welcome-file>
+    </welcome-file-list>
 </web-app>
