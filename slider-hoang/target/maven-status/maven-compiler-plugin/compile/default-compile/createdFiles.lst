@@ -1,9 +1,9 @@
+cst8218\Hoang\slider\business\SliderFacade.class
+cst8218\Hoang\slider\JakartaRestConfiguration.class
+cst8218\Hoang\slider\resources\JakartaEE10Resource.class
 cst8218\Hoang\slider\business\AbstractFacade.class
 cst8218\Hoang\slider\business\SliderGame.class
-cst8218\Hoang\slider\business\SliderFacade.class
 cst8218\Hoang\slider\business\SliderFacadeREST.class
-cst8218\Hoang\slider\JakartaRestConfiguration.class
 cst8218\Hoang\slider\entity\Slider.class
 cst8218\Hoang\slider\presentation\SliderBean.class
-cst8218\Hoang\slider\resources\JakartaEE10Resource.class
 cst8218\Hoang\slider\business\SliderGame$1.class

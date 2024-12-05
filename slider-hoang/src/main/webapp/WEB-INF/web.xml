@@ -7,27 +7,79 @@
         <session-timeout>30</session-timeout>
     </session-config>
     
+    <!-- JSF FacesServlet configuration -->
+    <servlet>
+        <servlet-name>FacesServlet</servlet-name>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>FacesServlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+
     <!-- Default welcome file configuration -->
     <welcome-file-list>
-        <welcome-file>index.html</welcome-file> <!-- Serve React index.html -->
+        <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
-
-    <!-- Ensure unmatched routes redirect to React's index.html -->
-    <error-page>
-        <error-code>404</error-code>
-        <location>/index.html</location>
-    </error-page>
-
-    <!-- Optional Security Constraint for API and Admin Pages -->
+    
+<!-- Security constraints -->
+    
+    <!-- RESTful API security -->
     <security-constraint>
-        <display-name>API Security</display-name>
         <web-resource-collection>
-            <web-resource-name>API</web-resource-name>
-            <url-pattern>/resources/*</url-pattern> <!-- Protect backend resources -->
+            <web-resource-name>REST API</web-resource-name>
+            <url-pattern>/resources/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>RestGroup</role-name>
+            <role-name>Admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- JSF Slider Pages security -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Slider Pages</web-resource-name>
+            <url-pattern>/Slider/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>JsfGroup</role-name>
+            <role-name>Admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- Admin area security -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Admin Area</web-resource-name>
+            <url-pattern>/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>Admin</role-name>
         </auth-constraint>
     </security-constraint>
+
+    <!-- Public index page -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Public Page</web-resource-name>
+            <url-pattern>/index.xhtml</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+    
+
+    <!-- Security roles -->
+    <security-role>
+        <role-name>RestGroup</role-name>
+    </security-role>
+    <security-role>
+        <role-name>JsfGroup</role-name>
+    </security-role>
+    <security-role>
+        <role-name>Admin</role-name>
+    </security-role>
+
 
 </web-app>

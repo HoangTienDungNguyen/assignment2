@@ -8,12 +8,14 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Locale;
+import jakarta.faces.context.FacesContext;
 
 /**
  * Backing bean for managing Slider entities through JSF pages.
  * Provides methods to interact with Slider entities such as creating,
  * editing, listing, and deleting sliders.
- * Uses dependency injection to access the SliderFacade.
+ * Includes language switching for internationalization.
  * 
  * @author Hoang
  */
@@ -22,15 +24,20 @@ import java.util.List;
 public class SliderBean implements Serializable {
     @Inject
     private SliderFacade sliderFacade;
+
     private Slider slider = new Slider();
     private List<Slider> sliders;
 
+    // Internationalization support
+    private Locale locale;
+
     /**
-     * Initializes the list of sliders when the bean is created.
+     * Initializes the list of sliders and sets the default locale.
      */
     @PostConstruct
     public void init() {
         refreshSliderList();
+        locale = FacesContext.getCurrentInstance().getExternalContext().getRequestLocale();
     }
 
     /**
@@ -112,5 +119,33 @@ public class SliderBean implements Serializable {
      */
     public void setSlider(Slider slider) {
         this.slider = slider;
+    }
+
+    /**
+     * Retrieves the current locale.
+     * 
+     * @return The current locale.
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Sets the current locale and updates the FacesContext.
+     * 
+     * @param language The language code (e.g., "en", "zh", "vi").
+     */
+    public void setLanguage(String language) {
+        locale = new Locale(language);
+        FacesContext.getCurrentInstance().getViewRoot().setLocale(locale);
+    }
+
+    /**
+     * Retrieves the current language code.
+     * 
+     * @return The current language code.
+     */
+    public String getLanguage() {
+        return locale.getLanguage();
     }
 }
