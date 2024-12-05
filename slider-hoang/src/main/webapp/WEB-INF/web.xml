@@ -42,7 +42,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Slider Pages</web-resource-name>
-            <url-pattern>/Slider/*</url-pattern>
+            <url-pattern>*.xhtml</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>JsfGroup</role-name>
@@ -54,7 +54,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Admin Area</web-resource-name>
-            <url-pattern>/*</url-pattern>
+            <url-pattern>/admin/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>Admin</role-name>
