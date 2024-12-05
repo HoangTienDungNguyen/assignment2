@@ -22,7 +22,7 @@ public class SliderUITest {
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
-        driver.get("http://localhost:8080/slider-hoang"); // Adjust this to your app's URL
+        driver.get("http://localhost:8080/slider-hoang"); 
     }
 
     @AfterAll
