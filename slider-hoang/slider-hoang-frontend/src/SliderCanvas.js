@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 const SliderCanvas = ({ sliders, onBack }) => {
+  const { t } = useTranslation();
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
 
@@ -54,7 +56,7 @@ const SliderCanvas = ({ sliders, onBack }) => {
   return (
     <div>
       <button onClick={onBack} className="btn">
-        Back to List
+      {t("backToList")}
       </button>
       <canvas ref={canvasRef} width="800" height="600" style={{ border: "1px solid black" }} />
     </div>

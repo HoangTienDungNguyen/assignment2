@@ -2,9 +2,14 @@ import React, { useState, useEffect } from "react";
 import SliderList from "./SliderList";
 import SliderForm from "./SliderForm";
 import SliderCanvas from "./SliderCanvas";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useTranslation } from "react-i18next";
+import "./i18n"; 
+
 import axios from "axios";
 
 const App = () => {
+  const { t } = useTranslation();
   const [currentView, setCurrentView] = useState("list"); // 'list', 'form', or 'canvas'
   const [selectedSlider, setSelectedSlider] = useState(null); // Slider being edited
   const [sliders, setSliders] = useState([]); // List of sliders
@@ -17,7 +22,7 @@ const App = () => {
       const response = await axios.get(apiBase);
       setSliders(response.data);
     } catch (error) {
-      console.error("Error fetching sliders:", error);
+      console.error(`${t("Error fetching sliders")}: ${err.message}`);
     }
   };
 
@@ -50,6 +55,7 @@ const App = () => {
 
   return (
     <div>
+      <LanguageSwitcher />
       {currentView === "list" && (
         <div>
           <SliderList
@@ -58,7 +64,7 @@ const App = () => {
             onCreateNewSlider={handleCreateNewSlider}
           />
           <button onClick={handleCanvasView} className="btn">
-            View Canvas
+          {t("viewCanvas")}
           </button>
         </div>
       )}

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 
 const SliderForm = ({ slider, onBack }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState(
     slider || { size: "", x: "", y: "", maxTravel: "" }
   );
@@ -26,18 +28,18 @@ const SliderForm = ({ slider, onBack }) => {
 
     request
       .then(() => {
-        alert(`Slider ${slider ? "updated" : "created"} successfully!`);
+        alert(`Slider ${slider ? t("edit") : t("createNewSlider")} ok!`);
         onBack(); // Return to the list view
       })
-      .catch((err) => setError("Error saving slider: " + err.message));
+      .catch((err) => setError(`${t("errorSaving")}: ${err.message}`));
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>{slider ? "Edit Slider" : "Create New Slider"}</h2>
+      <h2>{slider ? t("edit") : t("createNewSlider")}</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <label>
-        Size:
+        {t("size")}
         <input
           type="number"
           name="size"
@@ -48,7 +50,7 @@ const SliderForm = ({ slider, onBack }) => {
       </label>
       <br />
       <label>
-        X Position:
+        {t("xPosition")}
         <input
           type="number"
           name="x"
@@ -59,7 +61,7 @@ const SliderForm = ({ slider, onBack }) => {
       </label>
       <br />
       <label>
-        Y Position:
+        {t("yPosition")}
         <input
           type="number"
           name="y"
@@ -70,7 +72,7 @@ const SliderForm = ({ slider, onBack }) => {
       </label>
       <br />
       <label>
-        Max Travel:
+        {t("maxTravel")}
         <input
           type="number"
           name="maxTravel"
@@ -80,9 +82,9 @@ const SliderForm = ({ slider, onBack }) => {
         />
       </label>
       <br />
-      <button type="submit">{slider ? "Update" : "Create"}</button>
+      <button type="submit">{slider ?t("edit") : t("createNewSlider")}</button>
       <button type="button" onClick={onBack}>
-        Cancel
+      {t("backToList")}
       </button>
     </form>
   );

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const SliderList = ({ onEditSlider, onCreateNewSlider }) => {
+  const { t } = useTranslation();
   const [sliders, setSliders] = useState([]);
   const [error, setError] = useState(null);
 
@@ -9,29 +11,29 @@ const SliderList = ({ onEditSlider, onCreateNewSlider }) => {
     axios
       .get("/slider-hoang/resources/sliders")
       .then((response) => setSliders(response.data))
-      .catch((err) => setError("Error fetching sliders: " + err.message));
-  }, []);
+      .catch((err) => setError(`${t("errorFetching")}: ${err.message}`));
+  }, [t]);
 
   const handleDelete = (id) => {
     axios
       .delete(`/slider-hoang/resources/sliders/${id}`)
       .then(() => setSliders(sliders.filter((slider) => slider.id !== id)))
-      .catch((err) => setError("Error deleting slider: " + err.message));
+      .catch((err) => setError(`${t("noSlidersFound")}: ${err.message}`));
   };
 
   return (
     <div>
-      <h1>All Sliders</h1>
+      <h1>{t("title")}</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <table>
         <thead>
           <tr>
             <th>ID</th>
-            <th>Size</th>
-            <th>X Position</th>
-            <th>Y Position</th>
-            <th>Max Travel</th>
-            <th>Actions</th>
+            <th>{t("size")}</th>
+            <th>{t("xPosition")}</th>
+            <th>{t("yPosition")}</th>
+            <th>{t("maxTravel")}</th>
+            <th>{t("actions")}</th>
           </tr>
         </thead>
         <tbody>
@@ -79,19 +81,19 @@ const SliderList = ({ onEditSlider, onCreateNewSlider }) => {
                   </button>
                 </td>
                 <td>
-                  <button onClick={() => onEditSlider(slider)}>Edit</button>
-                  <button onClick={() => handleDelete(slider.id)}>Delete</button>
+                  <button onClick={() => onEditSlider(slider)}>{t("edit")}</button>
+                  <button onClick={() => handleDelete(slider.id)}>{t("delete")}</button>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6">No sliders found.</td>
+              <td colSpan="6">{t("noSlidersFound")}</td>
             </tr>
           )}
         </tbody>
       </table>
-      <button onClick={onCreateNewSlider}>Create New Slider</button>
+      <button onClick={onCreateNewSlider}>{t("createNewSlider")}</button>
     </div>
   );
 };
