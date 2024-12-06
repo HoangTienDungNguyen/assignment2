@@ -1,8 +1,18 @@
+<!-- 
+Assignment 2
+Author: RuochenLiu, Nguyen Dung
+Description: JSF page for creating or editing a new slider entity. This page provides 
+             fields to enter slider details like size, position (x, y), and max travel. 
+             It includes internationalization support and form validation for required 
+             fields. On form submission, the slider is saved or updated using the 
+             backing bean's save method.
+-->
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html  lang="#{sliderBean.language}"
     xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
   <f:view locale="#{sliderBean.locale}">
     <h:head>
         <title>Create New Slider</title>
@@ -10,25 +20,23 @@
 
     <h:body>
        <h1>#{bundle.create_new_slider_title}</h1>
-<h:form>
-    <h:panelGrid columns="2" cellpadding="5">
-        <h:outputLabel for="size" value="#{bundle.size_label}" />
-        <h:inputText id="size" value="#{sliderBean.slider.size}" required="true" label="#{bundle.size_label}" />
+       <h:form>
+          <h:panelGrid columns="2" cellpadding="5">
+              <h:outputLabel for="size" value="#{bundle.size_label}" />
+              <h:inputText id="size" value="#{sliderBean.slider.size}" required="true" label="#{bundle.size_label}" />
 
-        <h:outputLabel for="x" value="#{bundle.x_position_label}" />
-        <h:inputText id="x" value="#{sliderBean.slider.x}" required="true" label="#{bundle.x_position_label}" />
+              <h:outputLabel for="x" value="#{bundle.x_position_label}" />
+              <h:inputText id="x" value="#{sliderBean.slider.x}" required="true" label="#{bundle.x_position_label}" />
 
-        <h:outputLabel for="y" value="#{bundle.y_position_label}" />
-        <h:inputText id="y" value="#{sliderBean.slider.y}" required="true" label="#{bundle.y_position_label}" />
+              <h:outputLabel for="y" value="#{bundle.y_position_label}" />
+              <h:inputText id="y" value="#{sliderBean.slider.y}" required="true" label="#{bundle.y_position_label}" />
 
-        <h:outputLabel for="maxTravel" value="#{bundle.max_travel_label}" />
-        <h:inputText id="maxTravel" value="#{sliderBean.slider.maxTravel}" required="true" label="#{bundle.max_travel_label}" />
-    </h:panelGrid>
-    <h:commandButton value="#{bundle.save_button}" action="#{sliderBean.save}" />
-    <h:commandButton value="#{bundle.cancel_button}" action="sliderList.xhtml?faces-redirect=true" immediate="true" />
-</h:form>
-
+              <h:outputLabel for="maxTravel" value="#{bundle.max_travel_label}" />
+              <h:inputText id="maxTravel" value="#{sliderBean.slider.maxTravel}" required="true" label="#{bundle.max_travel_label}" />
+          </h:panelGrid>
+          <h:commandButton value="#{bundle.save_button}" action="#{sliderBean.save}" />
+          <h:commandButton value="#{bundle.cancel_button}" action="sliderList.xhtml?faces-redirect=true" immediate="true" />
+       </h:form>
     </h:body>
-      
-    </f:view>
+  </f:view>
 </html>

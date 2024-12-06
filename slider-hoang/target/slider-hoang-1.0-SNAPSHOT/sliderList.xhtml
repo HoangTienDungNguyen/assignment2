@@ -1,3 +1,11 @@
+<!-- 
+Assignment 2
+Author: RuochenLiu, Nguyen Dung
+Description: This page displays a list of all sliders in a tabular format. 
+             It provides functionality to edit, delete, and create sliders.
+             It also supports internationalization via the #{bundle} values.
+-->
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="#{sliderBean.language}" 
       xmlns="http://www.w3.org/1999/xhtml"
@@ -8,35 +16,48 @@
             <title>#{bundle.all_sliders_title}</title>
         </h:head>
         <h:body>
+            <!-- Page Title -->
             <h1>#{bundle.all_sliders_title}</h1>
+            
+            <!-- Sliders Table -->
             <h:form>
                 <h:dataTable value="#{sliderBean.sliders}" var="slider" border="1">
+                    <!-- ID Column -->
                     <h:column>
                         <f:facet name="header">#{bundle.id_column}</f:facet>
                         #{slider.id}
                     </h:column>
+                    <!-- Size Column -->
                     <h:column>
                         <f:facet name="header">#{bundle.size_column}</f:facet>
                         #{slider.size}
                     </h:column>
+                    <!-- X Position Column -->
                     <h:column>
                         <f:facet name="header">#{bundle.x_column}</f:facet>
                         #{slider.x}
                     </h:column>
+                    <!-- Y Position Column -->
                     <h:column>
                         <f:facet name="header">#{bundle.y_column}</f:facet>
                         #{slider.y}
                     </h:column>
+                    <!-- Max Travel Column -->
                     <h:column>
                         <f:facet name="header">#{bundle.max_travel_column}</f:facet>
                         #{slider.maxTravel}
                     </h:column>
+                    <!-- Actions Column -->
                     <h:column>
                         <f:facet name="header">#{bundle.actions_column}</f:facet>
+                        <!-- Edit Button -->
                         <h:commandButton value="#{bundle.edit_button}" action="#{sliderBean.edit(slider.id)}" />
+                        <!-- Delete Button -->
                         <h:commandButton value="#{bundle.delete_button}" action="#{sliderBean.delete(slider.id)}" />
                     </h:column>
                 </h:dataTable>
+                
+                <!-- Create New Slider Button -->
                 <br />
                 <h:commandButton value="#{bundle.create_new_slider_button}" action="createSlider.xhtml?faces-redirect=true" />
             </h:form>
